@@ -2,6 +2,11 @@
 
 A new Flutter project to test the usage of GPS etc.
 
+## App screenshot
+
+<img src = "screenshots/Screenshot_1611877209.png" width=180>
+<img src = "screenshots/Screenshot_1611877926.png" width=180>
+
 ## Packages
 
 [cupertino_icons](https://pub.dev/packages/cupertino_icons) (^1.0.1)\
@@ -10,4 +15,4 @@ A new Flutter project to test the usage of GPS etc.
 
 ## Download
 
-Please find the app demo from the `Releases` page
+Please find the app demo from the [**Releases**](https://github.com/iqfareez/test_gps_geocoding_geolocation/releases) page
