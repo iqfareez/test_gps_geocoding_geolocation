@@ -16,3 +16,5 @@ A new Flutter project to test the usage of GPS etc.
 ## Download
 
 Please find the app demo from the [**Releases**](https://github.com/iqfareez/test_gps_geocoding_geolocation/releases) page
+
+This app is to test location detection feature that should solve [this issue](https://github.com/iqfareez/App-Waktu-Solat-Malaysia/issues/28) in Malaysia Prayer Time app. Also we are ditching third party API - [mpti906](https://mpt.i906.my/api.html)
