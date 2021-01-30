@@ -1,10 +1,12 @@
+import 'package:geolocator/geolocator.dart';
+
 ///Taken from https://api.azanpro.com/zone/zones.json#
 ///As suggested by Aizal Manan
 
 import 'location_coordinate_model.dart';
 
 class LocationCoordinate {
-  List<LocationCoordinateData> locationCoordinate = [
+  List<LocationCoordinateData> _locationCoordinate = [
     LocationCoordinateData(
       zone: "JHR01",
       negeri: "Johor",
@@ -1539,4 +1541,30 @@ class LocationCoordinate {
       lng: 115.247346,
     ),
   ];
+
+  String getNearestAddress(Position position, String negeri) {
+    List<int> tempIndex = [];
+    double nearestDistance = 99999;
+    int nearestIndex;
+    for (var i = 0; i < _locationCoordinate.length; i++) {
+      if (_locationCoordinate[i].negeri == negeri) {
+        tempIndex.add(i);
+      }
+    }
+    print(tempIndex);
+    for (var index in tempIndex) {
+      print('detected index is $index');
+
+      double distance = Geolocator.distanceBetween(
+          position.latitude,
+          position.longitude,
+          _locationCoordinate[index].lat,
+          _locationCoordinate[index].lng);
+      if (distance.compareTo(nearestDistance) == -1) {
+        nearestDistance = distance;
+        nearestIndex = index;
+      }
+    }
+    return _locationCoordinate[nearestIndex].zone;
+  }
 }

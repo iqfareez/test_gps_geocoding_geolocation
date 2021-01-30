@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:test_gps_geocoder/models/location_coordinate.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -10,9 +11,17 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   String message = 'Tap button';
-  String message1 = 'Tap button';
   String address = 'Tap address';
+  String nearAddress = 'Tap';
+  String locationAddress;
   Position position;
+  LocationCoordinate locationCoordinate;
+
+  @override
+  void initState() {
+    super.initState();
+    locationCoordinate = LocationCoordinate();
+  }
 
   Future<Position> _determinePosition() async {
     bool serviceEnabled;
@@ -42,21 +51,35 @@ class _HomeState extends State<Home> {
   }
 
   void _printCurrentPosition() async {
-    // position = await _determinePosition().then((f) {
-    //   var text = 'lat: ${f.latitude}\nlong: ${f.longitude}';
-    //   setState(() {
-    //     message = text;
-    //   });
-    //   print('Finish printing');
-    //   return f;
-    // });
     position = await _determinePosition();
     var text = 'lat: ${position.latitude}\nlong: ${position.longitude}';
     setState(() {
       message = text;
     });
-
     print(text);
+  }
+
+  void _getAddressFromCoordinate() async {
+    try {
+      List<Placemark> placemarks =
+          await placemarkFromCoordinates(position.latitude, position.longitude);
+      var first = placemarks.first;
+      setState(() {
+        print(first);
+
+        address = '${first.locality}, ${first.administrativeArea}';
+        locationAddress = first.administrativeArea;
+      });
+    } catch (e) {
+      print('Error occured');
+      setState(() {
+        address = e.toString();
+      });
+    } finally {
+      print('finished');
+    }
+
+    // print(first.name);
   }
 
   @override
@@ -76,32 +99,8 @@ class _HomeState extends State<Home> {
           Padding(
             padding: const EdgeInsets.all(30.0),
             child: CupertinoButton.filled(
-                child: Text(
-                  'GET COORDINATE',
-                ),
+                child: Text('GET COORDINATE'),
                 onPressed: _printCurrentPosition),
-          ),
-          Text(
-            message1,
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 18,
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(30.0),
-            child: CupertinoButton.filled(
-                child: Text(
-                  'CALC HOME DISTANCE',
-                ),
-                onPressed: () {
-                  double distanceInKm = Geolocator.distanceBetween(3.066,
-                          101.636, position.latitude, position.longitude) /
-                      1000;
-                  setState(() {
-                    message1 = '${distanceInKm.toStringAsFixed(1)} km';
-                  });
-                }),
           ),
           Text(
             address,
@@ -113,32 +112,38 @@ class _HomeState extends State<Home> {
           Padding(
             padding: const EdgeInsets.all(30.0),
             child: CupertinoButton.filled(
+              child: Text('GET ADDRESS'),
+              onPressed: _getAddressFromCoordinate,
+            ),
+          ),
+          Text(
+            nearAddress,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 18,
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(30.0),
+            child: CupertinoButton.filled(
                 child: Text(
-                  'GET ADDRESS',
+                  'FIND NEAREST LOCATION',
                 ),
-                onPressed: () async {
-                  try {
-                    List<Placemark> placemarks = await placemarkFromCoordinates(
-                        position.latitude, position.longitude);
-                    var first = placemarks.first;
-                    setState(() {
-                      print('success get location');
-                      address = first.toString();
-                    });
-                  } catch (e) {
-                    print('Error occured');
-                    setState(() {
-                      address = e.toString();
-                    });
-                  } finally {
-                    print('finished');
-                  }
-
+                onPressed: () {
+                  setState(() {
+                    nearAddress = locationCoordinate.getNearestAddress(
+                        position, locationAddress);
+                  });
                   // print(first.name);
                 }),
           ),
         ],
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 }
