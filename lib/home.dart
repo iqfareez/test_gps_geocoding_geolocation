@@ -12,8 +12,8 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   String message = 'Tap button';
   String address = 'Tap address';
-  String nearAddress = 'Tap';
-  String locationAddress;
+  String nearJakimCode = 'Tap';
+  String administrativeArea;
   Position position;
   LocationCoordinate locationCoordinate;
 
@@ -50,13 +50,13 @@ class _HomeState extends State<Home> {
     return await Geolocator.getCurrentPosition();
   }
 
-  void _printCurrentPosition() async {
+  void _getUserPosition() async {
     position = await _determinePosition();
     var text = 'lat: ${position.latitude}\nlong: ${position.longitude}';
     setState(() {
       message = text;
     });
-    print(text);
+    print(position);
   }
 
   void _getAddressFromCoordinate() async {
@@ -68,18 +68,15 @@ class _HomeState extends State<Home> {
         print(first);
 
         address = '${first.locality}, ${first.administrativeArea}';
-        locationAddress = first.administrativeArea;
+        administrativeArea = first.administrativeArea;
       });
     } catch (e) {
       print('Error occured');
       setState(() {
         address = e.toString();
       });
-    } finally {
-      print('finished');
+      _getUserPosition();
     }
-
-    // print(first.name);
   }
 
   @override
@@ -99,8 +96,7 @@ class _HomeState extends State<Home> {
           Padding(
             padding: const EdgeInsets.all(30.0),
             child: CupertinoButton.filled(
-                child: Text('GET COORDINATE'),
-                onPressed: _printCurrentPosition),
+                child: Text('GET COORDINATE'), onPressed: _getUserPosition),
           ),
           Text(
             address,
@@ -117,7 +113,7 @@ class _HomeState extends State<Home> {
             ),
           ),
           Text(
-            nearAddress,
+            nearJakimCode,
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 18,
@@ -131,10 +127,13 @@ class _HomeState extends State<Home> {
                 ),
                 onPressed: () {
                   setState(() {
-                    nearAddress = locationCoordinate.getNearestAddress(
-                        position, locationAddress);
+                    try {
+                      nearJakimCode = locationCoordinate.getJakimCodeNearby(
+                          position, administrativeArea);
+                    } catch (e) {
+                      nearJakimCode = '[$e] Seems like you\'re not in Malaysia';
+                    }
                   });
-                  // print(first.name);
                 }),
           ),
         ],

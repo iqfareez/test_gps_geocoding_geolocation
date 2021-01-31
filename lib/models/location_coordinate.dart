@@ -1,6 +1,6 @@
 import 'package:geolocator/geolocator.dart';
 
-///Taken from https://api.azanpro.com/zone/zones.json#
+///Taken and modified from https://api.azanpro.com/zone/zones.json#
 ///As suggested by Aizal Manan
 
 import 'location_coordinate_model.dart';
@@ -1528,43 +1528,59 @@ class LocationCoordinate {
     ),
     LocationCoordinateData(
       zone: "WLY01",
-      negeri: "Kuala Lumpur",
+      negeri: "Federal Territory of Kuala Lumpur",
+      lokasi: "Kuala Lumpur",
+      lat: 3.139003,
+      lng: 101.686855,
+    ),
+    // duplicate beacuse of sometime in returns in malay and sometimes in english smh
+    LocationCoordinateData(
+      zone: "WLY01",
+      negeri: "Wilayah Persekutuan Kuala Lumpur",
       lokasi: "Kuala Lumpur",
       lat: 3.139003,
       lng: 101.686855,
     ),
     LocationCoordinateData(
       zone: "WLY02",
-      negeri: "Labuan",
+      negeri: "Labuan Federal Territory",
       lokasi: "Labuan",
       lat: 5.275346,
       lng: 115.247346,
     ),
   ];
 
-  String getNearestAddress(Position position, String negeri) {
+  /// Return nearest JAKIM code from the given coordinate and negeri.
+  /// Pass administrative area as negeri.
+  String getJakimCodeNearby(Position position, String negeri) {
     List<int> tempIndex = [];
-    double nearestDistance = 99999;
+    double nearestDistance = 50000; //init distance to be 50 km
     int nearestIndex;
+
     for (var i = 0; i < _locationCoordinate.length; i++) {
       if (_locationCoordinate[i].negeri == negeri) {
+        // collect index of the same negeri
         tempIndex.add(i);
       }
     }
-    print(tempIndex);
-    for (var index in tempIndex) {
-      print('detected index is $index');
+    print('tempIndex is $tempIndex');
 
+    for (var index in tempIndex) {
+      // calculate distance each of indexes location with user location
       double distance = Geolocator.distanceBetween(
           position.latitude,
           position.longitude,
           _locationCoordinate[index].lat,
           _locationCoordinate[index].lng);
+      // distance returned in meter
+
       if (distance.compareTo(nearestDistance) == -1) {
+        // check the shortest distance
         nearestDistance = distance;
         nearestIndex = index;
       }
     }
+    // return the nearby jakim code
     return _locationCoordinate[nearestIndex].zone;
   }
 }

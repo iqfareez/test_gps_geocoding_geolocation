@@ -14,10 +14,12 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.orange,
       ),
+      darkTheme: ThemeData.dark(),
       themeMode: ThemeMode.dark,
       home: Scaffold(
         appBar: AppBar(
           title: Text('GPS Demo'),
+          centerTitle: true,
         ),
         body: Home(),
       ),
