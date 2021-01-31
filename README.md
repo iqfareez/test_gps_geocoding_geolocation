@@ -5,7 +5,7 @@ A new Flutter project to test the usage of GPS etc.
 ## App screenshot
 
 <img src = "screenshots/Screenshot_1611965652.png" width=180>
-<img src = "screenshots/Screenshot_1611877926.png" width=180>
+<img src = "screenshots/Screenshot_1612088926.png" width=180>
 
 # Testing / verification
 
@@ -14,9 +14,9 @@ Api call: `https://api.azanpro.com/zone/grouped.json?state=<state>`\
 Get list of state from [here](http://api.azanpro.com/zone/states.json)\
 Example: https://api.azanpro.com/zone/grouped.json?state=PAHANG
 
-## Packages
+## Packages used
 
-[cupertino_icons](https://pub.dev/packages/cupertino_icons) (^1.0.1)\
+[cupertino_icons](https://pub.dev/packages/cupertino_icons) (^1.0.1)\ - not using it btw
 [geolocator](https://pub.dev/packages/geolocator) (^6.1.14)\
 [geocoding](https://pub.dev/packages/geocoding) (^1.0.5)
 
